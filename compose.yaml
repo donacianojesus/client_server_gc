@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # Server service
+  server:
+    build: .
+    container_name: tcp-chat-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./users.dat:/app/users.dat
+    command: ./target/server 0.0.0.0 8080
+    networks:
+      - chat-network
+    restart: unless-stopped
+
+  # Client 1 service
+  client1:
+    build: .
+    container_name: tcp-chat-client1
+    depends_on:
+      - server
+    volumes:
+      - ./client1_input:/app/input
+    command: ./target/client server 8080
+    networks:
+      - chat-network
+    stdin_open: true
+    tty: true
+
+  # Client 2 service
+  client2:
+    build: .
+    container_name: tcp-chat-client2
+    depends_on:
+      - server
+    volumes:
+      - ./client2_input:/app/input
+    command: ./target/client server 8080
+    networks:
+      - chat-network
+    stdin_open: true
+    tty: true
+
+  # Client 3 service
+  client3:
+    build: .
+    container_name: tcp-chat-client3
+    depends_on:
+      - server
+    volumes:
+      - ./client3_input:/app/input
+    command: ./target/client server 8080
+    networks:
+      - chat-network
+    stdin_open: true
+    tty: true
+
+  # Remote client service (for AWS deployment)
+  remoteclient:
+    build: .
+    container_name: tcp-chat-remoteclient
+    volumes:
+      - ./remote_input:/app/input
+    command: ./target/client 0.0.0.0 8080
+    networks:
+      - chat-network
+    stdin_open: true
+    tty: true
+
+networks:
+  chat-network:
+    driver: bridge
+
+volumes:
+  client1_input:
+  client2_input:
+  client3_input:
+  remote_input:
