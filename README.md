@@ -38,7 +38,7 @@ A robust TCP-based group chat system with client-server architecture implemented
 └── README.md               # This file
 ```
 
-## Prerequisites
+## Must Have
 
 - **Docker** installation
 - **Basic knowledge of TCP networking**
